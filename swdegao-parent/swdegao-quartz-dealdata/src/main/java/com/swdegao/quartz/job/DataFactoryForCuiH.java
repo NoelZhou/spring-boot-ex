@@ -107,22 +107,38 @@ public class DataFactoryForCuiH implements BaseJob {
 				// 存放插入翠亨数据库的数据
 				List<DataFactory> lDataFactories = new ArrayList<DataFactory>();
 				_log.info("插入的设备的id:  " + value.getId());
-				_log.info("data数据总数:  " + value.getId());
+				_log.info("data数据总数:  " + value.getData().size());
 				StringBuffer sBuffer = new StringBuffer();
 				sBuffer.append(df.format(value.getData().get(value.getData().size() - 1).getTime()));
 				value.getData().stream().forEach(deviceValue -> {
 					DataFactory dataFactory = new DataFactory();
 					dataFactory.setMeter_id(String.valueOf(value.getId()));
 					dataFactory.setFactory_no(device.getName());
+					
+					String modelName = device.getModelName().split(" ")[0];
+		    		if(modelName.equals("物联网大表")) {
+		    			dataFactory.setMeter_type(String.valueOf(18));
+		    		}else if(modelName.equals("电磁流量计")) {
+		    			dataFactory.setMeter_type(String.valueOf(19));
+		    		}else if(modelName.equals("脉冲流量计")) {
+		    			dataFactory.setMeter_type(String.valueOf(51));
+		    		}
+					
 					dataFactory.setCollectiondate(deviceValue.getTime());
 					dataFactory.setPressure(deviceValue.getValue().getPressure());
 					dataFactory.setPflownum(deviceValue.getValue().getReadNumber());
 					dataFactory.setCflownum(deviceValue.getValue().getReverseNumber());
 					dataFactory.setFlow(deviceValue.getValue().getTotalFlow());
+					try {
+						dataFactory.setWritetime(df.parse(df.format(new Date())));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 					lDataFactories.add(dataFactory);
 				});
 				int size = lDataFactories.size();
 				if (size <= 1000) {
+					_log.info("正在插入中的数据数:"+size);
 					iCuiHService.insertDataOfRealTimeByBatch(lDataFactories);
 				} else {
 					int temp = size / 1000;

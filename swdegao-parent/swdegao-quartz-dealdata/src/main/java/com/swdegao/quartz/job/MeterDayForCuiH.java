@@ -5,10 +5,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.swdegao.quartz.entity.MeterDay;
-//import com.swdegao.quartz.service.ICuiHService;
 public class MeterDayForCuiH implements BaseJob {
 
 	private static Logger _log = LoggerFactory.getLogger(MeterDayForCuiH.class); 
@@ -20,15 +16,10 @@ public class MeterDayForCuiH implements BaseJob {
 	private static final String cronVersion = "1.0";
 	private static final String author = "DeGao Team";
 
-//	@Autowired
-//	public ICuiHService iCuiHService;
 	
     public void execute(JobExecutionContext context)  
         throws JobExecutionException {  
         _log.info("MeterDayForCuiH 执行时间: " + new Date());  
-        MeterDay meterDay = new MeterDay();
-        
-//        iCuiHService.insertDataOfMeterDay(meterDay);
     }
 
 

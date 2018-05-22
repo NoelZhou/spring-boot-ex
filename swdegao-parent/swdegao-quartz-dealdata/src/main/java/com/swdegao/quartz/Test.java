@@ -1,6 +1,5 @@
 package com.swdegao.quartz;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,14 +13,9 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.yaml.snakeyaml.util.UriEncoder;
-
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.mysql.fabric.xmlrpc.base.Array;
 import com.swdegao.quartz.common.URLConfig;
 import com.swdegao.quartz.entity.DataFactory;
-import com.swdegao.quartz.entity.DeviceValue;
 import com.swdegao.quartz.entity.ScadaDevice;
 import com.swdegao.quartz.entity.ScadaDeviceValues;
 import com.swdegao.quartz.job.NewJob;
