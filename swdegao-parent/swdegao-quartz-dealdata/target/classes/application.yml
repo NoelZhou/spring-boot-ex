@@ -1,0 +1,134 @@
+server:
+  port: 9999
+#  address: 192.168.1.66
+  tomcat:
+    max-threads: 100
+    uri-encoding: UTF-8
+  servlet:
+    context-path: /quartz
+
+#---------------------------------mybatis映射----------------------------------------------# 
+mybatis: 
+  mapper-locations: classpath:mybatis/mapping/*.xml
+  type-aliases-package: com.swdegao.quartz.entity
+
+#---------------------------------数据库mysql配置----------------------------------------------# 
+spring:
+  datasource:
+    druid:
+      stat-view-servlet:
+        loginUsername: admin
+        loginPassword: 123456
+    dynamic:
+      master:
+        username: root
+        password: 123456
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/hello_test?characterEncoding=utf-8&useSSL=false
+        druid:
+          initial-size: 3
+          max-active: 8
+          min-idle: 2
+          max-wait: -1
+          min-evictable-idle-time-millis: 30000
+          max-evictable-idle-time-millis: 30000
+          time-between-eviction-runs-millis: 0
+          validation-query: select 1
+          validation-query-timeout: -1
+          test-on-borrow: false
+          test-on-return: false
+          test-while-idle: true
+          pool-prepared-statements: true
+          max-open-prepared-statements: 100
+          filters: stat,wall
+          share-prepared-statements: true
+      slave:
+        one:
+#          username: root
+#          password: 123456
+#          driver-class-name: com.mysql.jdbc.Driver
+#          url: jdbc:mysql://localhost:3306/moxi?characterEncoding=utf-8&useSSL=false
+        
+          username: SYS as SYSDBA
+          password: D375091g
+          driver-class-name: oracle.jdbc.OracleDriver
+          url: jdbc:oracle:thin:@192.168.0.21:1521:north
+          druid:
+            initial-size: 3
+            max-active: 20
+    initialization-mode: always
+#  mvc:
+#    static-path-pattern: /**
+
+#---------------------------------模板配置----------------------------------------------# 
+  thymeleaf: 
+    mode: HTML
+    cache: false
+#      
+#  jpa:
+#      hibernate:
+#        ddl-auto: create #ddl-auto:设为update表示每次都不会重新建表
+#      show-sql: true
+
+#---------------------------------定时器quartz配置----------------------------------------------# 
+  quartz:
+    #相关属性配置
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: DealDataScheduler
+            instanceId: AUTO         
+          dataSource:
+            myDS:
+                URL: jdbc:mysql://localhost:3306/hello_test
+                driver: com.mysql.jdbc.Driver
+                maxConnections: 5
+                password: 123456
+                user: root             
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            dataSource: myDS
+            clusterCheckinInterval: 10000
+            useProperties: false
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 100
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+    #数据库方式
+    job-store-type: JDBC
+    #初始化表结构
+    #jdbc:
+      #initialize-schema: never
+ 
+logging: 
+  config: classpath:logback-spring.xml
+  path: D:/nmyslog/nmys  
+##---------------------------------redis配置----------------------------------------------#   
+#  redis: 
+#    database: 0
+#    host: localhost
+#    port: 6379
+## 连接超时时间 单位 ms（毫秒）
+#    timeout: 3000
+## 连接池中的最大空闲连接，默认值也是8。
+#    jedis: 
+#      pool: 
+#        max-idle: 8
+##连接池中的最小空闲连接，默认值也是0。
+#        min-idle: 0
+## 如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。
+#        max-active: 8
+## 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
+#        max-wait: -1
+#
+##------------------------------redis哨兵设置--------------------------------------------#
+## Redis服务器master的名字
+#    sentinel: 
+#      master: master8026
+## redis-sentinel的配置地址和端口
+#      nodes: 10.189.80.25:26379,10.189.80.26:26379,10.189.80.27:26378

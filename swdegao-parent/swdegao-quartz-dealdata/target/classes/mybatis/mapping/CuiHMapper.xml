@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swdegao.quartz.mapper.CuiHMapper">
+
+	<insert id="insertDataOfRealTime"
+		parameterType="com.swdegao.quartz.entity.DataFactory">
+		INSERT INTO
+		tb_data_factory_insert (METER_ID,METER_TYPE,FACTORY_NO,FLOW,PRESSURE,TURBIDITY,
+		COLLECTIONDATE,SIMNO,AINTERFLOW,VOLTAGE,DATAFROM,
+		salinity,power,pflownum,cflownum,RESIDUALCHLORINE,waterline,Writetime)
+		VALUES
+		(#{meter_id},#{meter_type},#{factory_no},#{flow},#{pressure},#{turbidity},#{collectiondate},
+		#{simno},#{ainterflow},#{voltage},#{datafrom},#{salinity},#{power},#{pflownum},#{cflownum},
+		#{residualchlorine},#{waterline},#{writetime})
+	</insert>
+
+	<insert id="insertDataOfRealTimeByBatch"
+		parameterType="java.util.List" useGeneratedKeys="false">
+		INSERT INTO
+		TB_DATA_FACTORY_INSERT (METER_ID,METER_TYPE,FACTORY_NO,FLOW,PRESSURE,TURBIDITY,
+		COLLECTIONDATE,SIMNO,AINTERFLOW,VOLTAGE,DATAFROM,
+		SALINITY,POWER,PFLOWNUM,CFLOWNUM,RESIDUALCHLORINE,WATERLINE,WRITETIME)
+		select cd.* from(
+		<foreach collection="list" item="item" index="index" close=")"
+			open="(" separator="union all">
+			select
+			#{item.meter_id,jdbcType=VARCHAR},#{item.meter_type,jdbcType=VARCHAR},#{item.factory_no,jdbcType=VARCHAR},
+			#{item.flow,jdbcType=FLOAT},#{item.pressure,jdbcType=FLOAT},#{item.turbidity,jdbcType=FLOAT},TO_DATE(#{item.collectiondate,jdbcType=DATE}),
+			#{item.simno,jdbcType=VARCHAR},#{item.ainterflow,jdbcType=FLOAT},#{item.voltage,jdbcType=NUMERIC},#{item.datafrom,jdbcType=VARCHAR},
+			#{item.salinity,jdbcType=FLOAT},#{item.power,jdbcType=FLOAT},#{item.pflownum,jdbcType=FLOAT},#{item.cflownum,jdbcType=FLOAT},
+			#{item.residualchlorine,jdbcType=FLOAT},#{item.waterline,jdbcType=VARCHAR},TO_DATE(#{item.writetime,jdbcType=DATE})
+			from dual
+		</foreach>
+		) cd
+	</insert>
+	<!-- mysql批量插入语句 -->
+	<!-- <insert id="insertDataOfRealTimeByBatch" parameterType="java.util.List"> 
+		INSERT INTO tb_data_factory_insert (METER_ID,METER_TYPE,FACTORY_NO,FLOW,PRESSURE,TURBIDITY, 
+		COLLECTIONDATE,SIMNO,AINTERFLOW,VOLTAGE,DATAFROM, salinity,power,pflownum,cflownum,RESIDUALCHLORINE,waterline,Writetime) 
+		VALUES <foreach collection="list" item="item" index="index" separator=","> 
+		(#{item.meter_id},#{item.meter_type},#{item.factory_no}, 
+		#{item.flow},#{item.pressure},#{item.turbidity},#{item.collectiondate}, 
+		#{item.simno},#{item.ainterflow},#{item.voltage},#{item.datafrom}, 
+		#{item.salinity},#{item.power},#{item.pflownum},#{item.cflownum}, 
+		#{item.residualchlorine},#{item.waterline},#{item.writetime}) 
+		</foreach> </insert> -->
+</mapper>
